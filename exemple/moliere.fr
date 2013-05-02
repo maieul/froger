@@ -1,7 +1,7 @@
 #Après un # = commentaire
 #Extension arbitraire, mis à fr
 #On prend l'exemple défini dans le chapitre 3 du livre, p. 60ss
-<sigle>=O,C,F,D,E,G,B,A#chaque signe est séparé par une virgule. <sigle> indique que l'on va les donné
+<sigle>O,C,F,D,E,G,B,A#chaque signe est séparé par une virgule. <sigle> indique que l'on va les donné
 <variantes>#pour indiquer qu'on passe en mode de liste des variantes. 
 #On se contente simplement d'indiquer les lieux variants/manuscrits variants, 
 #sans préciser le contenu des variantes (parcequ'en réalité on en a rien à faire).

@@ -71,7 +71,19 @@ def verifier_variantes(analyse):
 		    print ("Lieu ne prenant pas en compte tous les manuscrits" + str(var))
 		    variantes.remove(var)
     return {"sigle":analyse["sigle"],"variantes":variantes}
-    
+
+def grouper_variantes(variantes):
+	"""Grouper les variantes, en ne conservant que la partie variante : 
+	cf tableau p. 69"""
+	groupes ={}
+	for var in variantes:
+	    gr = frozenset(var[1])
+	    try:	#a-t-on déjà eu cette variante?
+		    groupes[gr] = groupes[gr] + 1
+	    except:
+		    groupes[gr] = 1		
+	
+	return groupes
 
 def __main__():
 	import sys
@@ -80,4 +92,7 @@ def __main__():
 	for fichier in option:
 		analyse = lecture_fichier(fichier)
 		analyse = verifier_variantes(analyse)
+		groupes  = grouper_variantes(analyse["variantes"])
+		for gr in groupes:
+		    print (str(gr) + " : " + str(groupes[gr]))
 __main__()

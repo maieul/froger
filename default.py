@@ -8,7 +8,8 @@ comment         = "#"
 sigle           = "<sigle>"
 sep_temoin      = ","
 sep_variante    = "|"
-variantes       = "<variantes>"
+
+
 try :
     from config import *
 except:

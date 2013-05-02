@@ -49,15 +49,35 @@ def lecture_fichier(fichier):
 	    #trouver les variantes
 	    elif analyse != (False,False):
 		    variantes.append(analyse)
-	if !sigle:
-		print "Sigles non définis : erreur"
-		break
+	try:
+	    print ("Liste des sigles :" +str(sigle))
+	except NameError:
+		print ("Sigles non définis : erreur")
 
+	# On peut maintenant renvoyer la liste des variantes
+	return {"sigle":sigle,"variantes":variantes}
+
+def verifier_variantes(analyse):
+    """Vérifier que nos variantes prennent bien en compte tout les manuscrits.
+    Si une variante ne prend pas en compte tous les manuscrits le signaler et l'effacer.
+    On suppose qu'on a un apparat positif en entré. Cf p. 66"""
+    sigles = set(analyse["sigle"])
+    variantes = analyse["variantes"]
+    
+    # parcourir chacun des variantes
+
+    for var in variantes:
+	    if set(var[0]+var[1]) != sigles:
+		    print ("Lieu ne prenant pas en compte tous les manuscrits" + str(var))
+		    variantes.remove(var)
+    return {"sigle":analyse["sigle"],"variantes":variantes}
+    
 
 def __main__():
 	import sys
 	import getopt
 	option = getopt.getopt(sys.argv[1:],'')[1]
 	for fichier in option:
-		lecture_fichier(fichier)
+		analyse = lecture_fichier(fichier)
+		analyse = verifier_variantes(analyse)
 __main__()

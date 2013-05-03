@@ -35,7 +35,38 @@ def lecture_ligne(ligne):
 	
 	return (False,False)
 
+def construire_stemma_manuscrit(groupes,stemma,sigle):
+	'''Construit, à partir d'un stemma par ensemble des manuscrits et des groupes classé par niveau un stemma par manuscrits. Cf p. 75. Et p. 78 :
+	"1 groupe de manuscrits / 1 manuscrit qui commet des fautes / la collection de fautes commises par lui > trois façon de désigner la même chose"'''
+	niveaux = list(groupes.keys())
+	niveaux.sort()
+	niveaux.reverse()
+	stemma_cop = stemma.copy()
+	stemma_man = nx.Graph()
+	correspondance = {} #tableau permettant d'obtenir la correspondance entre un groupe de manuscrit et le manuscrit auteur de la faute
+	
+	# d'abord, trouver l'origine
+	enfants = frozenset()
+	for edge in stemma.edges(sigle):
+		enfants = enfants.union(edge[1])
+	stemma.remove_node(sigle)	
 
+
+	correspondance[sigle] = sigle - enfants
+	# ensuite, descendendre niveau par niveau
+	for n in niveaux:
+	 	for gr in groupes[n]:
+	 		enfants = frozenset()
+	 		for edge in stemma.edges(gr):
+	 			enfants = enfants.union(edge[1])
+	 		stemma.remove_node(gr)
+	 		correspondance[gr] = gr - enfants
+
+	 # maintenant qu'on a les correspondances, on peut établir les liens.
+	for edge in stemma_cop.edges():
+		stemma_man.add_edge(correspondance[edge[0]],correspondance[edge[1]])
+	
+	return stemma_man
 def construire_stemma_ensemble(sigles,groupes):
 	"""Construire le stemma à partir des groupes de manuscrits avec variantes, déjà classé par niveau (taille)"""
 
@@ -74,7 +105,7 @@ def construire_stemma_ensemble(sigles,groupes):
 	stemma.add_node(sigles)
 	for noeud in ensemble_noeud_prec:
 		stemma.add_edge(sigles,noeud)
-	return niveaux,stemma
+	return stemma
 	
 def lecture_fichier(fichier):
 	"""Lire le fichier, ligne par ligne"""
@@ -140,7 +171,8 @@ def __main__():
 		analyse = lecture_fichier(fichier)
 		analyse = verifier_variantes(analyse)
 		groupes = niveau_groupes(grouper_variantes(analyse["variantes"]))
-		niveaux, stemma  = construire_stemma_ensemble(analyse["sigle"],groupes)
-		#stemma  = construire_stemma_manuscrit(niveaux, stemma)
-		print (stemma.edges())
+		stemma  = construire_stemma_ensemble(analyse["sigle"],groupes)
+		stemma  = construire_stemma_manuscrit(groupes, stemma,analyse["sigle"])
+		for edge in stemma.edges():
+			print (edge)
 __main__()

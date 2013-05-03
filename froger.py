@@ -7,6 +7,8 @@
 
 import default as config
 from collections import Counter
+import networkx as nx
+#import matplotlib.pyplot as plt
 def lecture_ligne(ligne):
 	"""Analyser une ligne"""
 	
@@ -33,7 +35,52 @@ def lecture_ligne(ligne):
 	
 	return (False,False)
 
+def construire_stemma_ensemble(sigles,groupes):
+	"""Construire le stemma à partir des groupes de manuscrits avec variantes"""
+	tri_groupes = {}
+	
+	### trier les groupes par taille
+	for gr in groupes.keys():
+		try:
+			tri_groupes[len(gr)] = tri_groupes[len(gr)]+[gr]
+		except:
+			tri_groupes[len(gr)] = [gr] 
+	niveaux = list(tri_groupes.keys())
+	niveaux.sort()
+	#sans doute manière de faire plus simple
 
+	stemma = nx.Graph()
+	ensemble_noeud_prec = [] # noter le nœud correspondant à chaque ensemble analysé. Ex : p. 75, le nœud G correspond à l'ensemble {G,A}. 
+	#A chaque niveau de l'arbre, on va remplir ce tableau, qu'on consultera au niveau supérieur.
+	#Si on relie un nœud à un autre, on supprime le nœud de ce tableau.
+	
+	# on commence par le bas de l'arbre, on suppose (pour le moment, qu'on a tjr en bas des groupes de 1 manuscrits)
+	for n in niveaux:
+		# pour le moment, on ne se préoccupe pas des éventuelles contamination
+		
+		for gr in tri_groupes[n]: # tous les groupes du niveau donné
+			if n == min(niveaux):
+				# si on est au plus bas dans le nombre de manuscrits, alors on place notre nœud sans le relier à rien. 
+				#p. 75 correspond à la ligne "1 manuscrit"
+				stemma.add_node(gr)
+			
+			else:
+				for noeud in ensemble_noeud_prec: # on cherche à savoir à quel nœud "inférieur" se rattache notre nœud.
+					if noeud.issubset(gr): 		  # si on trouve un nœud inférieur
+						#d'abord placer le nœud et l'arc
+						stemma.add_node(gr)
+						stemma.add_edge(gr,noeud)
+
+						#ensuite signalé qu'on a déjà rattaché un nœud de l'étage du dessous
+						ensemble_noeud_prec.remove(noeud)
+			# ne pas oublier 
+			ensemble_noeud_prec.append(gr)
+
+	# ne pas oublier d'ajouter le niveau ultime, comprenenant tt les manuscrits
+	stemma.add_node(sigles)
+	for noeud in ensemble_noeud_prec:
+		stemma.add_edge(sigles,noeud)
+	return stemma
 	
 def lecture_fichier(fichier):
 	"""Lire le fichier, ligne par ligne"""
@@ -55,7 +102,7 @@ def lecture_fichier(fichier):
 		print ("Sigles non définis : erreur")
 
 	# On peut maintenant renvoyer la liste des variantes
-	return {"sigle":sigle,"variantes":variantes}
+	return {"sigle":frozenset(sigle),"variantes":variantes}
 
 def verifier_variantes(analyse):
 	"""Vérifier que nos variantes prennent bien en compte tout les manuscrits.
@@ -88,7 +135,6 @@ def __main__():
 	for fichier in option:
 		analyse = lecture_fichier(fichier)
 		analyse = verifier_variantes(analyse)
-		groupes  = grouper_variantes(analyse["variantes"])
-		for gr in groupes:
-			print (str(gr) + " : " + str(groupes[gr]))
+		groupes = grouper_variantes(analyse["variantes"])
+		stemma  = construire_stemma_ensemble(analyse["sigle"],groupes)
 __main__()

@@ -35,17 +35,11 @@ def lecture_ligne(ligne):
 	
 	return (False,False)
 
+
 def construire_stemma_ensemble(sigles,groupes):
-	"""Construire le stemma à partir des groupes de manuscrits avec variantes"""
-	tri_groupes = {}
-	
-	### trier les groupes par taille
-	for gr in groupes.keys():
-		try:
-			tri_groupes[len(gr)] = tri_groupes[len(gr)]+[gr]
-		except:
-			tri_groupes[len(gr)] = [gr] 
-	niveaux = list(tri_groupes.keys())
+	"""Construire le stemma à partir des groupes de manuscrits avec variantes, déjà classé par niveau (taille)"""
+
+	niveaux = list(groupes.keys())
 	niveaux.sort()
 	#sans doute manière de faire plus simple
 
@@ -58,7 +52,7 @@ def construire_stemma_ensemble(sigles,groupes):
 	for n in niveaux:
 		# pour le moment, on ne se préoccupe pas des éventuelles contamination
 		
-		for gr in tri_groupes[n]: # tous les groupes du niveau donné
+		for gr in groupes[n]: # tous les groupes du niveau donné
 			if n == min(niveaux):
 				# si on est au plus bas dans le nombre de manuscrits, alors on place notre nœud sans le relier à rien. 
 				#p. 75 correspond à la ligne "1 manuscrit"
@@ -80,7 +74,7 @@ def construire_stemma_ensemble(sigles,groupes):
 	stemma.add_node(sigles)
 	for noeud in ensemble_noeud_prec:
 		stemma.add_edge(sigles,noeud)
-	return stemma
+	return niveaux,stemma
 	
 def lecture_fichier(fichier):
 	"""Lire le fichier, ligne par ligne"""
@@ -118,7 +112,17 @@ def verifier_variantes(analyse):
 			print ("Lieu ne prenant pas en compte tous les manuscrits" + str(var))
 			variantes.remove(var)
 	return {"sigle":analyse["sigle"],"variantes":variantes}
-
+def niveau_groupes(groupes):
+	"""Classe les groupes par niveau"""
+	tri_groupes = {}
+	
+	### trier les groupes par taille
+	for gr in groupes.keys():
+		try:
+			tri_groupes[len(gr)] = tri_groupes[len(gr)]+[gr]
+		except:
+			tri_groupes[len(gr)] = [gr] 
+	return tri_groupes
 def grouper_variantes(variantes):
 	"""Grouper les variantes, en ne conservant que la partie variante : 
 	cf tableau p. 69"""
@@ -135,6 +139,8 @@ def __main__():
 	for fichier in option:
 		analyse = lecture_fichier(fichier)
 		analyse = verifier_variantes(analyse)
-		groupes = grouper_variantes(analyse["variantes"])
-		stemma  = construire_stemma_ensemble(analyse["sigle"],groupes)
+		groupes = niveau_groupes(grouper_variantes(analyse["variantes"]))
+		niveaux, stemma  = construire_stemma_ensemble(analyse["sigle"],groupes)
+		#stemma  = construire_stemma_manuscrit(niveaux, stemma)
+		print (stemma.edges())
 __main__()

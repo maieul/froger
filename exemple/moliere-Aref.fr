@@ -1,26 +1,25 @@
 #Après un # = commentaire
 #Extension arbitraire, mis à fr
 #On prend l'exemple défini dans le chapitre 3 du livre, p. 60ss
-#Groupe de référence = 0
+#mais le groupe de réfréence est A : cf p. 82
 <sigle>O,C,F,D,E,G,B,A#chaque signe est séparé par une virgule. <sigle> indique que l'on va les donné
 #On se contente simplement d'indiquer les lieux variants/manuscrits variants, 
 #sans préciser le contenu des variantes (parcequ'en réalité on en a rien à faire).
 #on ne met que les cas où il n'y a qu'une variante. Les autres sont omis (cf. p. 116ss)
-O,D,F,B,C,E,G|A#Or ça
-O,D,C,E,G,A|F,B#Fille
-O,D,F,B,C,G,A|E#Vais
-O,D,F,C,E,G,A|B#Dire
-O,D,F,B|C,E,G,A#Nouvelle
-O,F,B,C,E,G,A|D#Où
-O,D,F,B,C,E|G,A#Ne vous att. v.
-O,D,C,E,G,A|F,B#On vous
-O,D,F,B,C,E,G|A#Qu'est-ce 
-O,D,F,B|C,E,G,A#Que cela
-O,D,F,C,E,G,A|B#Cela
-O,D,F,B,C,E|G,A#Plaisant
-O,D,F,B,C,G,A|E#De
-O,D,F,B,C,E|G,A#Il n'est
-O,F,B,C,E,G,A|D#Drôle
-O,D,C,E,G,A|F,B#Jeunes
-O,F,B,C,E,G,A|D#Nature,nature
-
+A|B,C,D,E,F,G,O#ma
+A,C,D,E,G,O|B,F#fille
+A,B,C,D,F,G,O|E#vais
+A,C,D,E,F,G,O|B#dire
+A,C,E,G|B,D,F,O#étrange
+A,B,C,E,F,G,O|D#où
+A,G|B,C,D,E,F,O#vous ne vous attendez
+A,C,D,E,G,O|B,F#On vous
+A|B,C,D,E,F,G,O#mais
+A,C,E,G|B,D,F,O#Qu'est
+A,C,D,E,F,G,O|B#Cela
+A,G|B,C,D,E,F,O#gai
+A,B,C,D,F,G,O|E#de
+A,G|B,C,D,E,F,O#rien
+A,B,C,E,F,G,O|D#drôle
+A,C,D,E,G,O|B,F#jeunes
+A,B,C,E,F,G,O|D#nature

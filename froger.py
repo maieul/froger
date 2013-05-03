@@ -6,7 +6,7 @@
 # Version 0.1
 
 import default as config
-
+from collections import Counter
 def lecture_ligne(ligne):
 	"""Analyser une ligne"""
 	
@@ -75,14 +75,10 @@ def verifier_variantes(analyse):
 def grouper_variantes(variantes):
 	"""Grouper les variantes, en ne conservant que la partie variante : 
 	cf tableau p. 69"""
-	groupes ={}
+	groupes = Counter()
 	for var in variantes:
 		gr = frozenset(var[1])
-		try:	#a-t-on déjà eu cette variante?
-			groupes[gr] = groupes[gr] + 1
-		except:
-			groupes[gr] = 1		
-	
+		groupes[gr] += 1
 	return groupes
 
 def __main__():

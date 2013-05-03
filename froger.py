@@ -23,7 +23,7 @@ def lecture_ligne(ligne):
 	
 	#pour dectecter qu'on passe aux variantes
 	elif ligne.find(config.sep_variante):
-	    variante = ligne.split(config.sep_variante)
+		variante = ligne.split(config.sep_variante)
 	if len(variante) != 2:
 		print ("Lieu n'ayant pas exactement deux variantes : "+ligne)
 	else:
@@ -40,17 +40,17 @@ def lecture_fichier(fichier):
 	fichier = open(fichier,"r")
 	variantes = []
 	for ligne in fichier:
-	    analyse =  lecture_ligne(ligne)
-	    
-	    # trouver les sigles
-	    if analyse[0] == (config.sigle):
-		    sigle = analyse[1]
-		    
-	    #trouver les variantes
-	    elif analyse != (False,False):
-		    variantes.append(analyse)
+		analyse =  lecture_ligne(ligne)
+		
+		# trouver les sigles
+		if analyse[0] == (config.sigle):
+			sigle = analyse[1]
+			
+		#trouver les variantes
+		elif analyse != (False,False):
+			variantes.append(analyse)
 	try:
-	    print ("Liste des sigles :" +str(sigle))
+		print ("Liste des sigles :" +str(sigle))
 	except NameError:
 		print ("Sigles non définis : erreur")
 
@@ -58,30 +58,30 @@ def lecture_fichier(fichier):
 	return {"sigle":sigle,"variantes":variantes}
 
 def verifier_variantes(analyse):
-    """Vérifier que nos variantes prennent bien en compte tout les manuscrits.
-    Si une variante ne prend pas en compte tous les manuscrits le signaler et l'effacer.
-    On suppose qu'on a un apparat positif en entré. Cf p. 66"""
-    sigles = set(analyse["sigle"])
-    variantes = analyse["variantes"]
-    
-    # parcourir chacun des variantes
+	"""Vérifier que nos variantes prennent bien en compte tout les manuscrits.
+	Si une variante ne prend pas en compte tous les manuscrits le signaler et l'effacer.
+	On suppose qu'on a un apparat positif en entré. Cf p. 66"""
+	sigles = set(analyse["sigle"])
+	variantes = analyse["variantes"]
+	
+	# parcourir chacun des variantes
 
-    for var in variantes:
-	    if set(var[0]+var[1]) != sigles:
-		    print ("Lieu ne prenant pas en compte tous les manuscrits" + str(var))
-		    variantes.remove(var)
-    return {"sigle":analyse["sigle"],"variantes":variantes}
+	for var in variantes:
+		if set(var[0]+var[1]) != sigles:
+			print ("Lieu ne prenant pas en compte tous les manuscrits" + str(var))
+			variantes.remove(var)
+	return {"sigle":analyse["sigle"],"variantes":variantes}
 
 def grouper_variantes(variantes):
 	"""Grouper les variantes, en ne conservant que la partie variante : 
 	cf tableau p. 69"""
 	groupes ={}
 	for var in variantes:
-	    gr = frozenset(var[1])
-	    try:	#a-t-on déjà eu cette variante?
-		    groupes[gr] = groupes[gr] + 1
-	    except:
-		    groupes[gr] = 1		
+		gr = frozenset(var[1])
+		try:	#a-t-on déjà eu cette variante?
+			groupes[gr] = groupes[gr] + 1
+		except:
+			groupes[gr] = 1		
 	
 	return groupes
 
@@ -94,5 +94,5 @@ def __main__():
 		analyse = verifier_variantes(analyse)
 		groupes  = grouper_variantes(analyse["variantes"])
 		for gr in groupes:
-		    print (str(gr) + " : " + str(groupes[gr]))
+			print (str(gr) + " : " + str(groupes[gr]))
 __main__()

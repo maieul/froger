@@ -3,7 +3,7 @@
 # Auteur : Maïeul ROUQUETTE
 # Licence : GPL3 
 # https://www.gnu.org/licenses/gpl-3.0.html
-# Version 0.1
+# Version 0.1.1
 #(frozenset({'B', 'C', 'D', 'E', 'F', 'O'}), frozenset({'A', 'B', 'C', 'D', 'E', 'F', 'G', 'O'})) > pas bon
 import default as config
 from collections import Counter

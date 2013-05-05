@@ -4,7 +4,7 @@
 # Licence : GPL3 
 # https://www.gnu.org/licenses/gpl-3.0.html
 # Version 0.1
-
+#(frozenset({'B', 'C', 'D', 'E', 'F', 'O'}), frozenset({'A', 'B', 'C', 'D', 'E', 'F', 'G', 'O'})) > pas bon
 import default as config
 from collections import Counter
 import networkx as nx
@@ -73,32 +73,29 @@ def construire_stemma_ensemble(sigles,groupes):
 	niveaux = list(groupes.keys())
 	niveaux.sort()
 	#sans doute manière de faire plus simple
-
 	stemma = nx.Graph()
 	ensemble_noeud_prec = [] # noter le nœud correspondant à chaque ensemble analysé. Ex : p. 75, le nœud G correspond à l'ensemble {G,A}. 
 	#A chaque niveau de l'arbre, on va remplir ce tableau, qu'on consultera au niveau supérieur.
 	#Si on relie un nœud à un autre, on supprime le nœud de ce tableau.
-	
+
 	# on commence par le bas de l'arbre, on suppose (pour le moment, qu'on a tjr en bas des groupes de 1 manuscrits)
 	for n in niveaux:
 		# pour le moment, on ne se préoccupe pas des éventuelles contamination
-		
 		for gr in groupes[n]: # tous les groupes du niveau donné
-			if n == min(niveaux):
+			stemma.add_node(gr)#dans tous les cas on place le noeud
+			if n !=min(niveaux):
 				# si on est au plus bas dans le nombre de manuscrits, alors on place notre nœud sans le relier à rien. 
 				#p. 75 correspond à la ligne "1 manuscrit"
-				stemma.add_node(gr)
-			
-			else:
-				for noeud in ensemble_noeud_prec: # on cherche à savoir à quel nœud "inférieur" se rattache notre nœud.
+				for noeud in ensemble_noeud_prec.copy(): # on cherche à savoir à quel nœud "inférieur" se rattache notre nœud.
+					
 					if noeud.issubset(gr): 		  # si on trouve un nœud inférieur
-						#d'abord placer le nœud et l'arc
-						stemma.add_node(gr)
+						#d'abord placer l'arc
+						
 						stemma.add_edge(gr,noeud)
 
 						#ensuite signalé qu'on a déjà rattaché un nœud de l'étage du dessous
 						ensemble_noeud_prec.remove(noeud)
-			# ne pas oublier 
+						print ("après modif")			# ne pas oublier 
 			ensemble_noeud_prec.append(gr)
 
 	# ne pas oublier d'ajouter le niveau ultime, comprenenant tt les manuscrits
@@ -175,4 +172,5 @@ def __main__():
 		stemma  = construire_stemma_manuscrit(groupes, stemma,analyse["sigle"])
 		for edge in stemma.edges():
 			print (edge)
+
 __main__()
